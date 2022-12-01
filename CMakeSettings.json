@@ -1,0 +1,39 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x64-Debug",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DEIGEN3_DIR:PATH=D:/OPEN/__install/Eigen3/share/eigen3/cmake -DPCL_DIR_PATH=\"D:\\Program Files\\PCL 1.12.1\\cmake\"",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": ""
+    },
+    {
+      "name": "x64-Release",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DEIGEN3_DIR:PATH=D:/OPEN/__install/Eigen3/share/eigen3/cmake -DPCL_DIR_PATH=\"D:\\Program Files\\PCL 1.12.1\\cmake\"",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": []
+    },
+    {
+      "name": "x64-Release-2",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "-DEIGEN3_DIR:PATH=D:/OPEN/__install/Eigen3/share/eigen3/cmake -DPCL_DIR_PATH=\"D:\\Program Files\\PCL 1.12.1\\cmake\"",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": []
+    }
+  ]
+}
