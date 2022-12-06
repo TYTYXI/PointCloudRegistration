@@ -20,18 +20,3 @@ struct TargetFunc
     return result;
   }
 };
-
-TEST(TLBO, test1)
-{
-  int aaaa = 1;
-
-  float* b = new float[4];
-  for (size_t i = 0; i < 2; ++i) {
-    b[2 * i] = -1.;
-    b[2 * i + 1] = 1.;
-  }
-  ioa::teachingLearningBasedOptimization<float, 2, TargetFunc<float>> tlbo(10, 20);
-  tlbo.setLimits(b);
-  tlbo.optimize();
-  ASSERT_TRUE(true);
-}

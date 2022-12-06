@@ -40,17 +40,17 @@ public:
     return true;
   }
 
-  void setMaxIteration(int iteration)
-  {
-    iteration_ = iteration;
-  }
-
-  void setLimits(ParamsType* limits)
+  virtual void setLimits(ParamsType* limits)
   {
     for (size_t i = 0; i < numOfParam; ++i) {
       limits_[2 * i] = *limits++;
       limits_[2 * i + 1] = *limits++;
     }
+  }
+
+  void setMaxIteration(int iteration)
+  {
+    iteration_ = iteration;
   }
 
   virtual void optimize(){};
@@ -73,13 +73,15 @@ public:
     }
   }
 
+public:
+  TargetFunc targetFunc_;
+
 protected:
   size_t iteration_;
   size_t numOfParams_;
 
   double fitnessScore_;
 
-  TargetFunc targetFunc_;
 
   ParamsType params_[numOfParam];
   ParamsType limits_[2 * numOfParam];

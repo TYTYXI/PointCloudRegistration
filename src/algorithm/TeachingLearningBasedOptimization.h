@@ -5,16 +5,26 @@
 #ifndef POINTCLOUDREGISTRATION_SRC_ALGORITHM_TEACHINGLEARNINGBASEDOPTIMIZATION_H_
 #define POINTCLOUDREGISTRATION_SRC_ALGORITHM_TEACHINGLEARNINGBASEDOPTIMIZATION_H_
 
-#include "IOABase.h"
 #include <iostream>
+
+#include "IOABase.h"
 
 namespace ioa {
 
-template <typename ParamsType, int numOfParams, typename TargetFunc>
+template <typename TargetFunc>
 class ALGORITHM_EXPORT teachingLearningBasedOptimization
-    : public IOABase<ParamsType, numOfParams, TargetFunc>
+    : public IOABase<typename TargetFunc::ParamsType, TargetFunc::numOfParams, TargetFunc>
 {
-  typedef IOABase<ParamsType, numOfParams, TargetFunc> BaseClass;
+  typedef typename TargetFunc::ParamsType ParamsType;
+  typedef IOABase<ParamsType, TargetFunc::numOfParams, TargetFunc> BaseClass;
+
+public:
+  teachingLearningBasedOptimization(int iteration, int numOfStudents,
+                                    TargetFunc targetFunc = TargetFunc())
+      : BaseClass(iteration, TargetFunc::numOfParams, targetFunc)
+      , numOfStudents_(numOfStudents)
+  {
+  }
 
   template <typename ParamsType, int numOfParams>
   class Student
@@ -27,40 +37,20 @@ class ALGORITHM_EXPORT teachingLearningBasedOptimization
 
   public:
     teachingLearningBasedOptimization* tlbo_;
-    ParamsType params_[numOfParams];
+    ParamsType params_[TargetFunc::numOfParams];
     double fitnessScore_;
   };
 
-  typedef Student<ParamsType, numOfParams> XStudent;
-
-public:
-  teachingLearningBasedOptimization(int iteration, int numOfStudents,
-                                    TargetFunc targetFunc = TargetFunc())
-      : BaseClass(iteration, numOfParams, targetFunc)
-      , numOfStudents_(numOfStudents)
-  {
-  }
+  typedef Student<ParamsType, TargetFunc::numOfParams> XStudent;
 
   void setNumOfStudents(int numOfStudents)
   {
     numOfStudents_ = numOfStudents;
   }
 
-  double targetFunctionValue()
+  void initTLBO()
   {
-    return this->fitnessScore_;
-  }
-
-  void parameters(ParamsType* params) const
-  {
-    for (size_t i = 0; i < numOfParams; ++i) {
-      params[i] = this->teacher_[i];
-    }
-  }
-
-  void optimize() override
-  {
-    // 初始化学生
+    // 初始化学生
     for (size_t i = 0; i < numOfStudents_; ++i) {
       students_.emplace_back(new XStudent(this));
       this->init(this->students_.back()->params_);
@@ -71,6 +61,52 @@ public:
     for (size_t i = 0; i < numOfStudents_; ++i) {
       students_[i]->fitnessScore_ = this->targetFunc_(students_[i]->params_);
     }
+  }
+
+  double targetFunctionValue()
+  {
+    return this->fitnessScore_;
+  }
+
+  void parameters(ParamsType* params) const
+  {
+    for (size_t i = 0; i < TargetFunc::numOfParams; ++i) {
+      params[i] = this->teacher_[i];
+    }
+  }
+
+  void replaceStudent(XStudent* oldStu, XStudent* newStu)
+  {
+    auto tempStu = new XStudent(this);
+    for (size_t i = 0; i < TargetFunc::numOfParams; ++i) {
+      tempStu->params_[i] = newStu->params_[i];
+    }
+    tempStu->fitnessScore_=this->targetFunc_(tempStu->params_);
+
+    auto res = std::find_if(this->students_.begin(), this->students_.end(),
+                            [&](XStudent* stu) { return stu == oldStu; });
+    delete (*res);
+    (*res) = tempStu;
+  }
+
+  XStudent* teacher()
+  {
+    return *std::min_element(students_.begin(), students_.end(),
+                             [](XStudent* student1, XStudent* student2) {
+                               return student1->fitnessScore_ < student2->fitnessScore_;
+                             });
+  }
+
+  XStudent* poorStudent()
+  {
+    return *std::max_element(students_.begin(), students_.end(),
+                             [](XStudent* student1, XStudent* student2) {
+                               return student1->fitnessScore_ < student2->fitnessScore_;
+                             });
+  }
+
+  void optimize() override
+  {
     for (size_t i = 0; i < this->iteration_; ++i) {
       calTheMean();
       calTheTeacher();
@@ -84,7 +120,7 @@ public:
 private:
   void calTheMean()
   {
-    ParamsType mean[numOfParams];
+    ParamsType mean[TargetFunc::numOfParams];
     for (size_t i = 0; i < this->numOfParams_; ++i) {
       mean[i] = 0;
     }
@@ -127,7 +163,7 @@ private:
         R = r(gen);
         T = (float)t(gen);
         //                std::cout << R << "  "<<T<<"  "<<std::endl;
-        ParamsType tempVariables[numOfParams];
+        ParamsType tempVariables[TargetFunc::numOfParams];
         //        float tempVariables[2];
         for (size_t k = 0; k < this->numOfParams_; ++k) {
           tempVariables[k] = students_[j]->params_[k] + R * (teacher_[k] - T * mean_[k]);
@@ -139,17 +175,17 @@ private:
         }
 
         if (auto res = this->targetFunc_(tempVariables); res < students_[j]->fitnessScore_) {
-          for (int k = 0; k < numOfParams; ++k) {
+          for (int k = 0; k < TargetFunc::numOfParams; ++k) {
             students_[j]->params_[k] = tempVariables[k];
           }
           students_[j]->fitnessScore_ = res;
-//                    std::cout << "teaching stage student" << j
-//                              << " success fitness_score = " << students_[j]->fitnessScore_ <<
-//                              std::endl;
+          //                    std::cout << "teaching stage student" << j
+          //                              << " success fitness_score = " <<
+          //                              students_[j]->fitnessScore_ << std::endl;
         } else {
-//                    std::cout << "teaching stage student" << j
-//                              << " fail fitness_score = " << students_[j]->fitnessScore_ <<
-//                              std::endl;
+          //                    std::cout << "teaching stage student" << j
+          //                              << " fail fitness_score = " << students_[j]->fitnessScore_
+          //                              << std::endl;
         }
         flag = false;
       }
@@ -174,15 +210,15 @@ private:
       float R;
 
       while (flag) {
-        ParamsType tempVariables[numOfParams];
+        ParamsType tempVariables[TargetFunc::numOfParams];
         R = r(gen);
         if (students_[j] < students_[student2]) {
-          for (int k = 0; k < numOfParams; ++k) {
+          for (int k = 0; k < TargetFunc::numOfParams; ++k) {
             tempVariables[k] = students_[j]->params_[k] +
                                R * (students_[j]->params_[k] - students_[student2]->params_[k]);
           }
         } else {
-          for (int k = 0; k < numOfParams; ++k) {
+          for (int k = 0; k < TargetFunc::numOfParams; ++k) {
             tempVariables[k] = students_[j]->params_[k] +
                                R * (students_[student2]->params_[k] - students_[j]->params_[k]);
           }
@@ -193,17 +229,17 @@ private:
         }
 
         if (auto res = this->targetFunc_(tempVariables); res < students_[j]->fitnessScore_) {
-          for (int k = 0; k < numOfParams; ++k) {
+          for (int k = 0; k < TargetFunc::numOfParams; ++k) {
             students_[j]->params_[k] = tempVariables[k];
           }
           students_[j]->fitnessScore_ = res;
-//                    std::cout << "learning stage student" << j
-//                              << " success fitness_score = " << students_[j]->fitnessScore_ <<
-//                              std::endl;
+          //                    std::cout << "learning stage student" << j
+          //                              << " success fitness_score = " <<
+          //                              students_[j]->fitnessScore_ << std::endl;
         } else {
-//                    std::cout << "learning stage student" << j
-//                              << " fail fitness_score = " << students_[j]->fitnessScore_ <<
-//                              std::endl;
+          //                    std::cout << "learning stage student" << j
+          //                              << " fail fitness_score = " << students_[j]->fitnessScore_
+          //                              << std::endl;
         }
         flag = false;
       }
@@ -214,8 +250,8 @@ private:
   std::vector<XStudent*> students_;
   int numOfStudents_;
 
-  ParamsType mean_[numOfParams];
-  ParamsType teacher_[numOfParams];
+  ParamsType mean_[TargetFunc::numOfParams];
+  ParamsType teacher_[TargetFunc::numOfParams];
 };
 
 } // namespace ioa
