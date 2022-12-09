@@ -9,6 +9,12 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 include(SpatialRegistrationAPI)
 
+if (CMAKE_CXX_STANDARD EQUAL 17)
+    add_compile_definitions(PCR_CXX17)
+elseif (CMAKE_CXX_STANDARD EQUAL 20)
+    add_compile_definitions(PCR_CXX20)
+endif ()
+
 find_package(Eigen3 REQUIRED)
 find_package(PCL REQUIRED)
 find_package(TBB REQUIRED)

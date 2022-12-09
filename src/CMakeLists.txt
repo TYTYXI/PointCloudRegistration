@@ -1,2 +1,2 @@
-add_subdirectory(algorithm)
-add_subdirectory(registration)
+add_subdirectory(OptimizationAlgorithms)
+#add_subdirectory(registration)

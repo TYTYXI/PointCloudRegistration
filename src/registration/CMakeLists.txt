@@ -1,11 +1,15 @@
 set(sources
-        ../algorithm/algorithm_global.h
-        ../algorithm/IOABase.cpp ../algorithm/IOABase.h
-        ../algorithm/TeachingLearningBasedOptimization.h
-        ../algorithm/MultipleClassTeachingLearningBasedOptimization.h
-        ../algorithm/ArtificialBeeColony.h
+#        ../algorithm/algorithm_global.h
+#        ../algorithm/IOABase.cpp ../algorithm/IOABase.h
+#        ../algorithm/TeachingLearningBasedOptimization.h
+#        ../algorithm/MultipleClassTeachingLearningBasedOptimization.h
+#        ../algorithm/ArtificialBeeColony.h
         registration_global.h
+        registrationObject.h registrationObject.cpp
+        registraion_visualization.h
+        registraion_visualization.cpp
         tlboRegistraion.h tlboRegistraion.cpp
+        dist.h
         )
 
 add_ons_plugin(registration

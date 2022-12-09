@@ -2,13 +2,12 @@
 // Created by XI on 2022/11/29.
 //
 
-#include "src/algorithm/TeachingLearningBasedOptimization.h"
 #include "gtest/gtest.h"
 
 #include <Eigen/Eigen>
 
 template <class T>
-struct TargetFunc
+struct L2_Simple
 {
   typedef bool is_kdtree_distance;
 

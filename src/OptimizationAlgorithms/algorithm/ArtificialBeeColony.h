@@ -10,12 +10,12 @@
 //
 //namespace ioa {
 //
-//template <typename TargetFunc>
+//template <typename L2_Simple>
 //class ALGORITHM_EXPORT ArtificialBeeColony
-//    : public IOABase<typename TargetFunc::ParamsType, TargetFunc::numOfParams, TargetFunc>
+//    : public IOABase<typename L2_Simple::ParamsType, L2_Simple::numOfParams, L2_Simple>
 //{
-//  typedef TargetFunc::ParamsType ParamsType;
-//  typedef IOABase<ParamsType, TargetFunc::numOfParams, TargetFunc> BaseClass;
+//  typedef L2_Simple::ParamsType ParamsType;
+//  typedef IOABase<ParamsType, L2_Simple::numOfParams, L2_Simple> BaseClass;
 //
 //  template <typename ParamsType, int numOfParams>
 //  class Bee
@@ -28,15 +28,15 @@
 //
 //  public:
 //    ArtificialBeeColony* tlbo_;
-//    ParamsType params_[TargetFunc::numOfParams];
+//    ParamsType params_[L2_Simple::numOfParams];
 //    double fitnessScore_;
 //  };
 //
-//  typedef Bee<ParamsType, TargetFunc::numOfParams> XBee;
+//  typedef Bee<ParamsType, L2_Simple::numOfParams> XBee;
 //
 //public:
-//  ArtificialBeeColony(int iteration, int numOfStudents, TargetFunc targetFunc = TargetFunc())
-//      : BaseClass(iteration, TargetFunc::numOfParams, targetFunc)
+//  ArtificialBeeColony(int iteration, int numOfStudents, L2_Simple targetFunc = L2_Simple())
+//      : BaseClass(iteration, L2_Simple::numOfParams, targetFunc)
 //  {
 //  }
 //
