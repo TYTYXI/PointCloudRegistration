@@ -9,21 +9,34 @@
 // #include "MultipleClassTeachingLearningBasedOptimization.h"
 #include "../algorithm/TeachingLearningBasedOptimization.h"
 #include "../problems/test1Problem.h"
+#include "problems/test2Problem.h"
 BENCHMARK_MAIN();
 
-void BM_TLBO(benchmark::State& state)
+void BM_TLBO1(benchmark::State& state)
 {
   for (auto _ : state) {
-  oa::Problem prob{oa::test1Problem()};
-  oa::Population pop{prob,30};
+    oa::Problem prob{oa::test1Problem()};
+    oa::Population pop{prob, 30};
 
-  oa::teachingLearningBasedOptimization tlbo(20);
+    oa::teachingLearningBasedOptimization tlbo(20);
 
-  auto res = tlbo.optimize(pop);
+    auto res = tlbo.optimize(pop);
 
-//        std::cout << res.championDecisionVariables()[0] << "  " <<
-//        res.championDecisionVariables()[1]
-//                  << "   " << res.championFitnessScores()[0] << std::endl;
+    //        std::cout << res.championDecisionVariables()[0] << "  " <<
+    //        res.championDecisionVariables()[1]
+    //                  << "   " << res.championFitnessScores()[0] << std::endl;
+  }
+}
+
+void BM_TLBO2(benchmark::State& state)
+{
+  for (auto _ : state) {
+    oa::Problem prob{oa::test2Problem()};
+    oa::Population pop{prob, 35};
+
+    oa::teachingLearningBasedOptimization tlbo(25);
+
+    auto res = tlbo.optimize(pop);
   }
 }
 
@@ -33,5 +46,6 @@ void BM_MCTLBO(benchmark::State& state)
   }
 }
 
-BENCHMARK(BM_TLBO)->Unit(benchmark::kMillisecond)->Iterations(1000)->Repetitions(100);
+BENCHMARK(BM_TLBO1)->Unit(benchmark::kMillisecond)->Iterations(1000)->Repetitions(20);
+BENCHMARK(BM_TLBO2)->Unit(benchmark::kMillisecond)->Iterations(1000)->Repetitions(20);
 BENCHMARK(BM_MCTLBO)->Unit(benchmark::kMillisecond)->Iterations(1000);

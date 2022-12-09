@@ -6,11 +6,13 @@ set(sources
         Problems.hpp Problems.cpp
         algorithm/TeachingLearningBasedOptimization.h algorithm/TeachingLearningBasedOptimization.cpp
         algorithm/MultipleClassTeachingLearningBasedOptimization.h
+        algorithm/MultipleClassTeachingLearningBasedOptimization.cpp
         algorithm/ArtificialBeeColony.h
         algorithm/AlgorithmObject.h
         algorithm/AlgorithmObject.cpp
 
         problems/test1Problem.cpp problems/test1Problem.h
+        problems/test2Problem.cpp problems/test2Problem.h
         problems/NullProblem.cpp problems/NullProblem.h
         )
 

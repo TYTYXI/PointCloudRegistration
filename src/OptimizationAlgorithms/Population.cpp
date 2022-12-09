@@ -11,6 +11,7 @@
 #include "Population.hpp"
 #include "Problems.hpp"
 
+#include <iostream>
 #include <tbb/spin_mutex.h>
 
 typedef tbb::spin_mutex FreeListMutexType;
@@ -65,9 +66,10 @@ void Population::updateChampion(VectorDouble dv, VectorDouble fs)
   assert(!fs.empty());
 
   if (championDecision_.empty() || championFitnessScores_[0] > fs[0]) {
+//    std::cout << dv[0] << "  " << dv[1] << std::endl;
     championDecision_ = std::move(dv);
     championFitnessScores_ = std::move(fs);
-//    mut.unlock();
+    //    mut.unlock();
   }
 }
 
@@ -119,6 +121,7 @@ void Population::setDvF(Population::PopSizeT i, const VectorDouble& dv, const Ve
   decisionVariables_[i].reserve(dv.size());
   fitnessScores_[i].reserve(f.size());
 
+//    std::cout << dv[0] << "  " << dv[1] << std::endl;
   updateChampion(dv, f);
 
   decisionVariables_[i].resize(dv.size());

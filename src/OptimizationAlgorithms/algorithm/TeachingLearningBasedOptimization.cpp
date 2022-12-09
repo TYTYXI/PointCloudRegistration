@@ -40,12 +40,11 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
   }
 
   // 判断越界
-  auto subjectTo = [&]( VectorDouble& sol) {
+  auto subjectTo = [&](VectorDouble& sol) {
     for (size_t k = 0; k < dim; ++k) {
       if (sol[k] < lb[k] || sol[k] > ub[k]) {
         std::uniform_real_distribution<double> r1(lb[k], ub[k]);
         sol[k] = r1(gen);
-        return true;
       }
     }
     return true;
@@ -67,7 +66,8 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
     teacher = pop.championDecisionVariables();
 
     tbb::parallel_for(
-        tbb::blocked_range<size_t>(0, numOfStudents), [&](tbb::blocked_range<size_t> range) {
+        tbb::blocked_range<size_t>(0, numOfStudents),
+        [&](tbb::blocked_range<size_t> range) {
           for (auto j = range.begin(); j != range.end(); ++j) {
             //            std::cout<<j<<std::endl;
             float R;
@@ -83,15 +83,14 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
                 newSol[j][k] = newSol[j][k] + R * (teacher[k] - T * mean[k]);
               }
 
-              if (auto res = subjectTo(newSol[j]); !res) {
-                //                std::cout << res << std::endl;
-                continue;
-              }
+              subjectTo(newSol[j]);
 
               if (auto res = kprob.fitnessScore(newSol[j]); res[0] < fitnessScores[j][0]) {
                 for (int k = 0; k < dim; ++k) {
                   X[j][k] = newSol[j][k];
                 }
+
+                //                std::cout<<"ccc"<<X[j][1]<<std::endl;
                 fitnessScores[j][0] = res[0];
                 pop.setDvF(j, newSol[j], res);
                 //                std::cout << "teaching stage student" << j
@@ -105,7 +104,8 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
               flag = false;
             }
           }
-        });
+        },
+        tbb::auto_partitioner());
 
     for (size_t j = 0; j < dim; ++j) {
       mean[j] = 0;
