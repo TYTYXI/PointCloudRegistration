@@ -33,3 +33,8 @@ NullProblem::NullProblem()
 NullProblem::~NullProblem()
 {
 }
+
+VectorDouble::value_type NullProblem::correspondenceEstimation()
+{
+  return 0.000001;
+}

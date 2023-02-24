@@ -46,6 +46,7 @@ void Problem::initProblemBase()
   lowerBoundary_ = std::move(bound.first);
   upperBoundary_ = std::move(bound.second);
   numOfObjectiveFunction_ = this->probPtr_->numOfObjectiveFunction();
+  correspondenceEstimation_ = this->probPtr_->correspondenceEstimation();
 }
 
 Problem::Problem()
@@ -98,4 +99,9 @@ Problem& Problem::operator=(const Problem& other)
 VectorDouble::size_type Problem::numOfObjectiveFunction()
 {
   return probPtr_->numOfObjectiveFunction();
+}
+
+VectorDouble::value_type Problem::correspondenceEstimation()
+{
+  return probPtr_->correspondenceEstimation();
 }

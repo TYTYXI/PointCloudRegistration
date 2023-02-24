@@ -19,7 +19,8 @@ public:
   VectorDouble::size_type numOfObjectiveFunction();
   VectorDouble::size_type dimension();
   std::pair<oa::VectorDouble, oa::VectorDouble> bounds();
+  VectorDouble::value_type correspondenceEstimation();
 };
-}
+} // namespace oa
 
 #endif // POINTCLOUDREGISTRATION_SRC_OPTIMIZATIONALGORITHMS_PROBLEMS_TEST2PROBLEM_H_

@@ -23,6 +23,8 @@ public:
   virtual VectorDouble::size_type dimension() = 0;
 
   virtual VectorDouble::size_type numOfObjectiveFunction() = 0;
+
+  virtual VectorDouble::value_type correspondenceEstimation() = 0;
 };
 
 template <class T>
@@ -65,6 +67,12 @@ public:
     //          return 1;
   };
 
+  VectorDouble::value_type correspondenceEstimation() final
+  {
+    return value.correspondenceEstimation();
+    //          return 1;
+  };
+
 public:
   T value;
 };
@@ -98,6 +106,8 @@ public:
 
   VectorDouble::size_type numOfObjectiveFunction();
 
+  VectorDouble::value_type correspondenceEstimation();
+
   const VectorDouble& lowerBoundary();
 
   const VectorDouble& upperBoundary();
@@ -110,6 +120,7 @@ private:
   VectorDouble lowerBoundary_;
   VectorDouble upperBoundary_;
   VectorDouble::size_type numOfObjectiveFunction_;
+  VectorDouble::value_type correspondenceEstimation_;
 };
 } // namespace oa
 #endif // POINTCLOUDREGISTRATION_SRC_OPTIMIZATIONALGORITHMS_PROBLEMS_HPP_

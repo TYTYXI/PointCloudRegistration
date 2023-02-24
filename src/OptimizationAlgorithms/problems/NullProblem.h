@@ -11,12 +11,13 @@ namespace oa {
 class ALGORITHM_EXPORT NullProblem
 {
 public:
-    NullProblem();
+  NullProblem();
   virtual ~NullProblem();
   VectorDouble fitnessScore(const VectorDouble& dv);
   std::pair<VectorDouble, VectorDouble> bounds();
   VectorDouble::size_type dimension();
   VectorDouble::size_type numOfObjectiveFunction();
+  VectorDouble::value_type correspondenceEstimation();
 };
 } // namespace oa
 #endif // POINTCLOUDREGISTRATION_SRC_OPTIMIZATIONALGORITHMS_PROBLEMS_NULLPROBLEM_H_

@@ -20,11 +20,12 @@ oa::VectorDouble oa::test2Problem::fitnessScore(const oa::VectorDouble& dv)
 {
   //  return { (dv[0] * std::cos(2 * oa::pi() * dv[1]) + dv[1] * std::sin(2 * oa::pi() * dv[0]))};
   auto res = (dv[0] * std::cos(2 * oa::pi() * dv[1]) + dv[1] * std::sin(2 * oa::pi() * dv[0]));
-  if (res < 0) {
-    return {1.};
-  } else {
-    return {1 / res};
-  }
+  return {-res};
+//  if (res < 0) {
+//    return {1.};
+//  } else {
+//    return {1 / res};
+//  }
 }
 
 VectorDouble::size_type oa::test2Problem::numOfObjectiveFunction()
@@ -40,4 +41,9 @@ VectorDouble::size_type oa::test2Problem::dimension()
 std::pair<oa::VectorDouble, oa::VectorDouble> oa::test2Problem::bounds()
 {
   return {{-2, -2}, {2, 2}};
+}
+
+VectorDouble::value_type test2Problem::correspondenceEstimation()
+{
+  return (0.00000000000001);
 }

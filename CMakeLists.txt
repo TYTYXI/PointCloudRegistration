@@ -18,7 +18,6 @@ endif ()
 find_package(Eigen3 REQUIRED)
 find_package(PCL REQUIRED)
 find_package(TBB REQUIRED)
-find_package(OPENMP REQUIRED)
 find_package(Qt6 COMPONENTS
         Core
         REQUIRED)

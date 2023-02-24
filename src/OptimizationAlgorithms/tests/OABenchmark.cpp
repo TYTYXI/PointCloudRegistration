@@ -9,6 +9,7 @@
 // #include "MultipleClassTeachingLearningBasedOptimization.h"
 #include "../algorithm/TeachingLearningBasedOptimization.h"
 #include "../problems/test1Problem.h"
+#include "algorithm/MultipleClassTeachingLearningBasedOptimization.h"
 #include "problems/test2Problem.h"
 BENCHMARK_MAIN();
 
@@ -40,12 +41,18 @@ void BM_TLBO2(benchmark::State& state)
   }
 }
 
+
 void BM_MCTLBO(benchmark::State& state)
 {
   for (auto _ : state) {
+    oa::Problem prob{oa::test2Problem()};
+    oa::Population pop{prob, 25};
+    oa::multipleClassTeachingLearningBasedOptimization mctlbo(24, 8,4);
+
+    auto res = mctlbo.optimize(pop);
   }
 }
 
-BENCHMARK(BM_TLBO1)->Unit(benchmark::kMillisecond)->Iterations(1000)->Repetitions(20);
-BENCHMARK(BM_TLBO2)->Unit(benchmark::kMillisecond)->Iterations(1000)->Repetitions(20);
+//BENCHMARK(BM_TLBO1)->Unit(benchmark::kMillisecond)->Iterations(1000)->Repetitions(20);
+BENCHMARK(BM_TLBO2)->Unit(benchmark::kMillisecond)->Iterations(1000);
 BENCHMARK(BM_MCTLBO)->Unit(benchmark::kMillisecond)->Iterations(1000);

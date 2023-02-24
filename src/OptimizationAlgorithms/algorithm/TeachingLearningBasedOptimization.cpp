@@ -33,6 +33,8 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
   std::uniform_int_distribution<int> stu2(0, numOfStudents - 1);
   auto X = pop.decisionVariables();
   auto fitnessScores = pop.fitnessScores();
+  VectorDouble mean(dim, 0);
+  VectorDouble teacher(dim);
   std::vector<VectorDouble> newSol(numOfStudents);
 
   for (auto& sol : newSol) {
@@ -47,22 +49,20 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
         sol[k] = r1(gen);
       }
     }
-    return true;
   };
 
   for (size_t i = 0; i < iteration_; ++i) {
 
-    VectorDouble mean(dim, 0);
-    for (const auto& stu : std::as_const(X)) {
+    // 计算中值mean和最优解teacher
+    for (const auto& kstu : std::as_const(X)) {
       for (size_t j = 0; j < dim; ++j) {
-        mean[j] += stu[j];
+        mean[j] += kstu[j];
       }
     }
     for (size_t j = 0; j < dim; ++j) {
       mean[j] /= (VectorDouble::value_type)numOfStudents;
     }
 
-    VectorDouble teacher(dim, 0);
     teacher = pop.championDecisionVariables();
 
     tbb::parallel_for(
@@ -76,7 +76,7 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
             while (flag) {
               R = r(gen);
               T = (float)t(gen);
-              //                              std::cout << R << "  "<<T<<"  "<<std::endl;
+              //     std::cout << R << "  "<<T<<"  "<<std::endl;
               newSol[j] = X[j];
               //        float tempVariables[2];
               for (size_t k = 0; k < dim; ++k) {
@@ -93,13 +93,13 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
                 //                std::cout<<"ccc"<<X[j][1]<<std::endl;
                 fitnessScores[j][0] = res[0];
                 pop.setDvF(j, newSol[j], res);
-                //                std::cout << "teaching stage student" << j
-                //                          << " success fitness_score = " << fitnessScores[j][0] <<
-                //                          std::endl;
+                //                                std::cout << "teaching stage student" << j
+                //                                          << " success fitness_score = " <<
+                //                                          fitnessScores[j][0] << std::endl;
               } else {
-                //                std::cout << "teaching stage student" << j
-                //                          << " fail fitness_score = " << fitnessScores[j][0] <<
-                //                          std::endl;
+                //                                std::cout << "teaching stage student" << j
+                //                                          << " fail fitness_score = " <<
+                //                                          fitnessScores[j][0] << std::endl;
               }
               flag = false;
             }
@@ -107,9 +107,9 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
         },
         tbb::auto_partitioner());
 
-    for (size_t j = 0; j < dim; ++j) {
-      mean[j] = 0;
-    }
+    // 计算中值mean和最优解teacher
+    std::fill(mean.begin(), mean.end(), 0);
+
     for (const auto& stu : std::as_const(X)) {
       for (size_t j = 0; j < dim; ++j) {
         mean[j] += stu[j];
@@ -147,10 +147,7 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
                 }
               }
 
-              if (auto res = subjectTo(newSol[j]); !res) {
-                //          std::cout << res << std::endl;
-                continue;
-              }
+              subjectTo(newSol[j]);
 
               if (auto res = kprob.fitnessScore(newSol[j]); res[0] < fitnessScores[j][0]) {
                 //                mut1.lock();
@@ -160,15 +157,16 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
                 fitnessScores[j][0] = res[0];
                 //                mut1.unlock();
                 pop.setDvF(j, newSol[j], res);
-                //                std::cout << "teaching stage student" << j
-                //                          << " success fitness_score = " <<
-                //                    fitnessScores[j][0] <<
-                //                          std::endl;
+                //                                std::cout << "teaching stage student" << j
+                //                                          << " success fitness_score = " <<
+                //                                    fitnessScores[j][0] <<
+                //                                          std::endl;
               } else {
-                //                std::cout << "teaching stage student" << j
-                //                          << " fail fitness_score = " << fitnessScores[j][0]
-                //                    <<
-                //                          std::endl;
+                //                                std::cout << "teaching stage student" << j
+                //                                          << " fail fitness_score = " <<
+                //                                          fitnessScores[j][0]
+                //                                    <<
+                //                                          std::endl;
               }
               flag = false;
             }

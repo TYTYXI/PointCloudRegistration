@@ -66,7 +66,7 @@ void Population::updateChampion(VectorDouble dv, VectorDouble fs)
   assert(!fs.empty());
 
   if (championDecision_.empty() || championFitnessScores_[0] > fs[0]) {
-//    std::cout << dv[0] << "  " << dv[1] << std::endl;
+    //    std::cout << dv[0] << "  " << dv[1] << std::endl;
     championDecision_ = std::move(dv);
     championFitnessScores_ = std::move(fs);
     //    mut.unlock();
@@ -93,7 +93,7 @@ VectorDouble Population::championDecisionVariables()
   return championDecision_;
 }
 
-VectorDouble Population::championFitnessScores()
+VectorDouble Population::championFitnessScores() const
 {
   return championFitnessScores_;
 }
@@ -121,7 +121,7 @@ void Population::setDvF(Population::PopSizeT i, const VectorDouble& dv, const Ve
   decisionVariables_[i].reserve(dv.size());
   fitnessScores_[i].reserve(f.size());
 
-//    std::cout << dv[0] << "  " << dv[1] << std::endl;
+  //    std::cout << dv[0] << "  " << dv[1] << std::endl;
   updateChampion(dv, f);
 
   decisionVariables_[i].resize(dv.size());
@@ -129,4 +129,106 @@ void Population::setDvF(Population::PopSizeT i, const VectorDouble& dv, const Ve
   std::copy(dv.begin(), dv.end(), decisionVariables_[i].begin());
   std::copy(f.begin(), f.end(), fitnessScores_[i].begin());
   lock.release();
+}
+
+void Population::replaceIndividual(Population::PopSizeT index,
+                                   const VectorDouble&& newDecisionVariables)
+{
+  if (newDecisionVariables.size() != problem_.dimension()) {
+    return;
+  }
+
+  if (index > this->size()) {
+    return;
+  }
+
+  decisionVariables_[index] = newDecisionVariables;
+}
+
+Population::Population(const Population& other)
+{
+  problem_ = (other.problem_);
+  decisionVariables_ = (other.decisionVariables_);
+  fitnessScores_ = (other.fitnessScores_);
+  championDecision_ = (other.championDecision_);
+  championFitnessScores_ = (other.championFitnessScores_);
+  randomEngine_ = (other.randomEngine_);
+}
+
+Population::Population(Population&& other) noexcept
+{
+  problem_ = (std::move(other.problem_));
+  decisionVariables_ = (std::move(other.decisionVariables_));
+  fitnessScores_ = (std::move(other.fitnessScores_));
+  championDecision_ = (std::move(other.championDecision_));
+  championFitnessScores_ = (std::move(other.championFitnessScores_));
+  randomEngine_ = (other.randomEngine_);
+}
+
+Population& Population::operator=(const Population& other)
+{
+  return *this = Population(other);
+}
+
+Population& Population::operator=(Population&& other) noexcept
+{
+  if (this != &other) {
+    problem_ = (std::move(other.problem_));
+    decisionVariables_ = (std::move(other.decisionVariables_));
+    fitnessScores_ = (std::move(other.fitnessScores_));
+    championDecision_ = (std::move(other.championDecision_));
+    championFitnessScores_ = (std::move(other.championFitnessScores_));
+    randomEngine_ = (other.randomEngine_);
+  }
+  return *this;
+}
+
+Population::PopSizeT Population::championDecisionVariablesIndex()
+{
+  this->updateChampionIndex();
+  return championDecisionIndex_;
+}
+
+void Population::updateChampionIndex()
+{
+  auto res = std::find(decisionVariables_.cbegin(), decisionVariables_.cend(), championDecision_);
+  championDecisionIndex_ = std::distance(decisionVariables_.cbegin(), res);
+}
+
+void Population::updatePoorest(VectorDouble dv, VectorDouble fs)
+{
+}
+
+void Population::updatePoorestIndex()
+{
+  auto res =
+      std::find(decisionVariables_.cbegin(), decisionVariables_.cend(), poorestDecisionVariables_);
+  poorestDecisionIndex_ = std::distance(decisionVariables_.cbegin(), res);
+}
+
+void Population::updatePoorest()
+{
+  auto res = std::min_element(fitnessScores_.cbegin(), fitnessScores_.cend(),
+                              [&](const VectorDouble& fitness1, const VectorDouble& fitness2) {
+                                return fitness1[0] < fitness2[0];
+                              });
+  poorestFitnessScores_ = *res;
+  auto index = std::distance(fitnessScores_.cbegin(), res);
+  poorestDecisionIndex_ = index;
+  poorestDecisionVariables_ = decisionVariables_[index];
+}
+
+VectorDouble Population::poorestDecisionVariables()
+{
+  return poorestDecisionVariables_;
+}
+
+Population::PopSizeT Population::poorestDecisionVariablesIndex() const
+{
+  return poorestDecisionIndex_;
+}
+
+VectorDouble Population::poorestFitnessScores()
+{
+  return poorestFitnessScores_;
 }

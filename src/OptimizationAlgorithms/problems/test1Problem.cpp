@@ -20,7 +20,7 @@ std::pair<oa::VectorDouble, oa::VectorDouble> test1Problem::bounds()
 
 oa::VectorDouble test1Problem::fitnessScore(const oa::VectorDouble& x)
 {
-  return {std::pow((x[0]+x[1]),2)};
+  return {std::pow((x[0] + x[1]), 2)};
 }
 
 oa::VectorDouble::size_type test1Problem::numOfObjectiveFunction()
@@ -34,4 +34,9 @@ test1Problem::test1Problem()
 
 test1Problem::~test1Problem()
 {
+}
+
+VectorDouble::value_type test1Problem::correspondenceEstimation()
+{
+  return 0.000001;
 }

@@ -3,6 +3,7 @@
 //
 
 #include "MultipleClassTeachingLearningBasedOptimization.h"
+#include "TeachingLearningBasedOptimization.h"
 
 #include <Eigen/Dense>
 #include <unsupported/Eigen/CXX11/Tensor>
@@ -12,9 +13,10 @@
 using namespace oa;
 
 multipleClassTeachingLearningBasedOptimization::multipleClassTeachingLearningBasedOptimization(
-    size_t iteration, size_t numOfClasses)
+    size_t iteration, size_t numOfClasses, size_t interval)
     : iteration_(iteration)
     , numOfClasses_(numOfClasses)
+    , interval_(interval)
 {
 }
 
@@ -26,32 +28,50 @@ Population multipleClassTeachingLearningBasedOptimization::optimize(Population p
   const auto& lb = bounds.first;
   const auto& ub = bounds.second;
   auto numOfStudents = pop.size();
+//  std::vector<double> results;
 
-  // TLBO参数准备
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_real_distribution<float> r(0.0, 1.0);
-  std::uniform_int_distribution<int> t(1, 2);
-  std::uniform_int_distribution<int> stu2(0, numOfStudents - 1);
-  auto X = pop.decisionVariables();
-  auto fitnessScores = pop.fitnessScores();
-  std::vector<VectorDouble> newSol(numOfStudents);
-  Eigen::Tensor<float, 3> a((long long)numOfClasses_, (long long)numOfStudents, (long long)dim);
 
-  for (auto& sol : newSol) {
-    sol.resize(dim);
-  }
+  std::vector<Population> pops(numOfStudents, pop);
+  oa::teachingLearningBasedOptimization tlbo(interval_);
 
-  // 判断越界
-  auto subjectTo = [&](VectorDouble& sol) {
-    for (size_t k = 0; k < dim; ++k) {
-      if (sol[k] < lb[k] || sol[k] > ub[k]) {
-        std::uniform_real_distribution<double> r1(lb[k], ub[k]);
-        sol[k] = r1(gen);
-        return true;
+  for (size_t j = 0; j < iteration_; ++j) {
+    for (size_t i = 0; i < numOfClasses_; ++i) {
+      //    auto res = tlbo.optimize(pop);
+      pops[i] = (tlbo.optimize(pops[i]));
+      pops[i].updatePoorest();
+    }
+
+    if (j != 0 && j % interval_ == 0) {
+      for (size_t i = 0; i < numOfClasses_; ++i) {
+        if (i != numOfStudents) {
+          pops[i + 1].replaceIndividual(pops[i + 1].poorestDecisionVariablesIndex(),
+                                        pops[i].championDecisionVariables());
+        } else {
+          pops[0].replaceIndividual(pops[0].poorestDecisionVariablesIndex(),
+                                    pops[i].championDecisionVariables());
+        }
       }
     }
-    return true;
-  };
-  return pop;
+
+//    auto res = std::min_element(
+//        pops.cbegin(), pops.cend(), [&](const Population& pop1, const Population& pop2) {
+//          return pop1.championFitnessScores()[0] < pop2.championFitnessScores()[0];
+//        });
+//
+//    results.emplace_back(res->championFitnessScores()[0]);
+//    std::cout << results.back() << std::endl;
+//    if (results.size() < 2) {
+//      continue;
+//    }
+//
+////    if (std::abs(results[j] - results[j - 1] )< kprob.correspondenceEstimation()) {
+////      break;
+////    }
+  }
+
+  auto res = std::min_element(
+      pops.cbegin(), pops.cend(), [&](const Population& pop1, const Population& pop2) {
+        return pop1.championFitnessScores()[0] < pop2.championFitnessScores()[0];
+      });
+  return *res;
 }
