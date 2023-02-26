@@ -15,10 +15,10 @@
 
 #include "problems.h"
 
-#define TEST_MACRO(name, index, prob)                                                              \
+#define TEST_MACRO(name, index,problem)                                                              \
   TEST(name, test##index)                                                                          \
   {                                                                                                \
-    oa::Problem prob{oa::prob(30)};                                                                \
+    oa::Problem prob{oa::problem(30)};                                                                \
     oa::WhaleOptimization woa(500);                                                                \
     double avg = 0;                                                                                \
     for (size_t i = 0; i < 30; ++i) {                                                              \

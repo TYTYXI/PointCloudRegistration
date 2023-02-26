@@ -26,7 +26,7 @@ oa::VectorDouble oa::MBF5::fitnessScore(const oa::VectorDouble& dv)
     };
   };
 
-  auto y = [=](double x) { return 1. + (x + 1.0) / 4.0; };
+  auto y = [=](double x) { return 1. + 0.25 * (x + 1.0); };
 
   double A1 = 0, A2 = 0;
   for (size_t i = 0; i < dv.size() - 1; ++i) {
@@ -36,7 +36,6 @@ oa::VectorDouble oa::MBF5::fitnessScore(const oa::VectorDouble& dv)
   for (size_t i = 0; i < dv.size(); ++i) {
     A2 += u(dv[i], 10, 100, 4);
   }
-  auto aa = 10 * std::sin(oa::pi() * y(dv[0]));
   sum = (oa::pi() / n) * (10 * std::pow(std::sin(oa::pi() * y(dv[0])), 2) + A1 +
                           std::pow(y(dv.back()) - 1., 2)) +
         A2;

@@ -16,6 +16,22 @@
 
 #include "problems.h"
 
+#define TEST_MACRO(name, index, prob)                                                              \
+  TEST(name, test##index)                                                                          \
+  {                                                                                                \
+    oa::Problem prob{oa::prob(30)};                                                                \
+    oa::teachingLearningBasedOptimization tlbo(500);                                               \
+    double avg = 0;                                                                                \
+    for (size_t i = 0; i < 30; ++i) {                                                              \
+      oa::Population pop{prob, 30};                                                                \
+      auto res = tlbo.optimize(pop);                                                               \
+      avg += res.championFitnessScores()[0];                                                       \
+    }                                                                                              \
+                                                                                                   \
+    std::cout << avg / 30 << std::endl;                                                            \
+    ASSERT_TRUE(true);                                                                             \
+  }
+
 TEST(TLBO, test1)
 {
   oa::Problem prob{oa::UBF1(30)};
@@ -23,10 +39,10 @@ TEST(TLBO, test1)
   oa::teachingLearningBasedOptimization tlbo(500);
 
   auto res = tlbo.optimize(pop);
-  std::cout << res.championFitnessScores() [0]<< std::endl;
+  std::cout << res.championFitnessScores()[0] << std::endl;
 
-//  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
-//            << "   " << res.championFitnessScores()[0] << std::endl;
+  //  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
+  //            << "   " << res.championFitnessScores()[0] << std::endl;
   ASSERT_TRUE(true);
 }
 
@@ -37,10 +53,10 @@ TEST(TLBO, test2)
   oa::teachingLearningBasedOptimization tlbo(500);
 
   auto res = tlbo.optimize(pop);
-  std::cout << res.championFitnessScores() [0]<< std::endl;
+  std::cout << res.championFitnessScores()[0] << std::endl;
 
-//  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
-//            << "   " << res.championFitnessScores()[0] << std::endl;
+  //  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
+  //            << "   " << res.championFitnessScores()[0] << std::endl;
   ASSERT_TRUE(true);
 }
 
@@ -51,10 +67,10 @@ TEST(TLBO, test3)
   oa::teachingLearningBasedOptimization tlbo(500);
 
   auto res = tlbo.optimize(pop);
-  std::cout << res.championFitnessScores() [0]<< std::endl;
+  std::cout << res.championFitnessScores()[0] << std::endl;
 
-//  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
-//            << "   " << res.championFitnessScores()[0] << std::endl;
+  //  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
+  //            << "   " << res.championFitnessScores()[0] << std::endl;
   ASSERT_TRUE(true);
 }
 
@@ -65,10 +81,10 @@ TEST(TLBO, test4)
   oa::teachingLearningBasedOptimization tlbo(500);
 
   auto res = tlbo.optimize(pop);
-  std::cout << res.championFitnessScores() [0]<< std::endl;
+  std::cout << res.championFitnessScores()[0] << std::endl;
 
-//  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
-//            << "   " << res.championFitnessScores()[0] << std::endl;
+  //  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
+  //            << "   " << res.championFitnessScores()[0] << std::endl;
   ASSERT_TRUE(true);
 }
 
@@ -79,13 +95,12 @@ TEST(TLBO, test5)
   oa::teachingLearningBasedOptimization tlbo(500);
 
   auto res = tlbo.optimize(pop);
-  std::cout << res.championFitnessScores() [0]<< std::endl;
+  std::cout << res.championFitnessScores()[0] << std::endl;
 
-//  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
-//            << "   " << res.championFitnessScores()[0] << std::endl;
+  //  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
+  //            << "   " << res.championFitnessScores()[0] << std::endl;
   ASSERT_TRUE(true);
 }
-
 
 TEST(TLBO, test6)
 {
@@ -94,10 +109,10 @@ TEST(TLBO, test6)
   oa::teachingLearningBasedOptimization tlbo(500);
 
   auto res = tlbo.optimize(pop);
-  std::cout << res.championFitnessScores() [0]<< std::endl;
+  std::cout << res.championFitnessScores()[0] << std::endl;
 
-//  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
-//            << "   " << res.championFitnessScores()[0] << std::endl;
+  //  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
+  //            << "   " << res.championFitnessScores()[0] << std::endl;
   ASSERT_TRUE(true);
 }
 
@@ -108,10 +123,10 @@ TEST(TLBO, test7)
   oa::teachingLearningBasedOptimization tlbo(500);
 
   auto res = tlbo.optimize(pop);
-  std::cout << res.championFitnessScores() [0]<< std::endl;
+  std::cout << res.championFitnessScores()[0] << std::endl;
 
-//  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
-//            << "   " << res.championFitnessScores()[0] << std::endl;
+  //  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
+  //            << "   " << res.championFitnessScores()[0] << std::endl;
   ASSERT_TRUE(true);
 }
 
@@ -122,9 +137,11 @@ TEST(TLBO, test8)
   oa::teachingLearningBasedOptimization tlbo(500);
 
   auto res = tlbo.optimize(pop);
-  std::cout << res.championFitnessScores() [0]<< std::endl;
+  std::cout << res.championFitnessScores()[0] << std::endl;
 
-//  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
-//            << "   " << res.championFitnessScores()[0] << std::endl;
+  //  std::cout << res.championDecisionVariables()[0] << "  " << res.championDecisionVariables()[1]
+  //            << "   " << res.championFitnessScores()[0] << std::endl;
   ASSERT_TRUE(true);
 }
+
+TEST_MACRO(TLBO, 12, MBF5)

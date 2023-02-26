@@ -23,7 +23,7 @@
     double avg = 0;                                                                                \
     for (size_t i = 0; i < 30; ++i) {                                                              \
       oa::Population pop{prob, 30};                                                                \
-      auto res = mctlbo.optimize(pop);                                                                \
+      auto res = mctlbo.optimize(pop);                                                             \
       avg += res.championFitnessScores()[0];                                                       \
     }                                                                                              \
                                                                                                    \
