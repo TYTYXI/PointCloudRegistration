@@ -13,7 +13,12 @@ FMBF3::~FMBF3()
 
 oa::VectorDouble oa::FMBF3::fitnessScore(const oa::VectorDouble& dv)
 {
-  return oa::VectorDouble();
+
+  double sum = 0.;
+  sum = 4 * std::pow(dv[0], 2) - 2.1 * std::pow(dv[0], 4) + 1. / 3. * std::pow(dv[0], 6) +
+        dv[0] * dv[1] - 4. * std::pow(dv[1], 2) + 4. * std::pow(dv[1], 4);
+
+  return {sum};
 }
 
 VectorDouble::size_type oa::FMBF3::dimension()
@@ -23,8 +28,8 @@ VectorDouble::size_type oa::FMBF3::dimension()
 
 std::pair<VectorDouble, VectorDouble> oa::FMBF3::bounds()
 {
-  VectorDouble lb(n_, -100);
-  VectorDouble ub(n_, 100);
+  VectorDouble lb(n_, -5);
+  VectorDouble ub(n_, 5);
   return {lb, ub};
 }
 

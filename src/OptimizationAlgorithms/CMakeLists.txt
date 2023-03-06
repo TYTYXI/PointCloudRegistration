@@ -4,14 +4,17 @@ set(sources
         Algorithm.hpp Algorithm.cpp
         Population.hpp Population.cpp
         Problems.hpp Problems.cpp
+        algorithm/AlgorithmObject.h algorithm/AlgorithmObject.cpp
         algorithm/TeachingLearningBasedOptimization.h algorithm/TeachingLearningBasedOptimization.cpp
         algorithm/MultipleClassTeachingLearningBasedOptimization.h
         algorithm/MultipleClassTeachingLearningBasedOptimization.cpp
         algorithm/CuckooSearch.h algorithm/CuckooSearch.cpp
         algorithm/WhaleOptimization.h algorithm/WhaleOptimization.cpp
-        algorithm/ArtificialBeeColony.h
-        algorithm/AlgorithmObject.h
-        algorithm/AlgorithmObject.cpp
+        algorithm/ArtificialBeeColony.h algorithm/ArtificialBeeColony.cpp
+        algorithm/TeachingLearningBasedWhaleOptimiziotn.h algorithm/TeachingLearningBasedWhaleOptimiziotn.cpp
+        algorithm/MultipleWhaleGroupsTeachingLearningBasedWhaleOptimiziotn.h
+        algorithm/MultipleWhaleGroupsTeachingLearningBasedWhaleOptimiziotn.cpp
+
 
         problems/problems.h
         problems/UnimodalBenchmarkFunctions/UBFs.h
@@ -61,7 +64,8 @@ add_ons_plugin(OptimizationAlgorithms
         PUBLIC_DEPENDS Eigen3::Eigen TBB::tbb)
 
 add_ons_test(OptimizationAlgorithms
-        SOURCES tests/OATest.cpp tests/WOATest.cpp tests/TLBOTest.cpp tests/MCTLBO.cpp
+        SOURCES tests/OATest.cpp tests/WOATest.cpp tests/TLBOTest.cpp tests/MCTLBOTest.cpp
+        tests/TLBWOATest.cpp tests/MWGTLBWOTest.cpp
         DEPENDS OptimizationAlgorithms Eigen3::Eigen TBB::tbb)
 
 add_ons_test(OptimizationAlgorithms_benchmark

@@ -26,7 +26,9 @@
 #include <QTextStream>
 
 #include "OptimizationAlgorithms/algorithm/MultipleClassTeachingLearningBasedOptimization.h"
+#include "OptimizationAlgorithms/algorithm/MultipleWhaleGroupsTeachingLearningBasedWhaleOptimiziotn.h"
 #include "OptimizationAlgorithms/algorithm/TeachingLearningBasedOptimization.h"
+#include "OptimizationAlgorithms/algorithm/TeachingLearningBasedWhaleOptimiziotn.h"
 #include "OptimizationAlgorithms/Problems.hpp"
 // #include "tlboRegistraion.h"
 #include "L2_SimpleProblem.h"
@@ -169,4 +171,72 @@ TEST(mctlboRegistraion, test2)
   ASSERT_TRUE(true);
 }
 
+TEST(tlbwoaRegistraion, test1)
+{
+  L2_SimpleProblem probb;
 
+  probb.setInputCloud(readPlyData::testPointCloud()->cloudSource);
+  probb.setInputTarget(readPlyData::testPointCloud()->cloudTarget);
+
+  oa::Problem prob{probb};
+  oa::Population pop{prob, 25};
+  oa::TeachingLearningBasedWhaleOptimiziotn tlbwoa(20);
+  //  oa::teachingLearningBasedOptimization mctlbo(20);
+
+  auto res = tlbwoa.optimize(pop);
+
+  PointCloudT::Ptr trans(new PointCloudT);
+
+  Eigen::Affine3f transform_2 = Eigen::Affine3f::Identity();
+  transform_2.translation() << res.championDecisionVariables()[3],
+      res.championDecisionVariables()[4], res.championDecisionVariables()[5];
+  transform_2.rotate(
+      Eigen::AngleAxisf(res.championDecisionVariables()[0], Eigen::Vector3f::UnitX()));
+  transform_2.rotate(
+      Eigen::AngleAxisf(res.championDecisionVariables()[1], Eigen::Vector3f::UnitY()));
+  transform_2.rotate(
+      Eigen::AngleAxisf(res.championDecisionVariables()[2], Eigen::Vector3f::UnitZ()));
+
+  pcl::transformPointCloud(*readPlyData::testPointCloud()->cloudSource, *trans, transform_2);
+  std::cout << transform_2.matrix() << std::endl;
+
+  showTrans(readPlyData::testPointCloud()->cloudSource, readPlyData::testPointCloud()->cloudTarget,
+            trans);
+
+  ASSERT_TRUE(true);
+}
+
+TEST(mwgtlbwoRegistraion, test1)
+{
+  L2_SimpleProblem probb;
+
+  probb.setInputCloud(readPlyData::testPointCloud()->cloudSource);
+  probb.setInputTarget(readPlyData::testPointCloud()->cloudTarget);
+
+  oa::Problem prob{probb};
+  oa::Population pop{prob, 25};
+  oa::MultipleWhaleGroupsTeachingLearningBasedWhaleOptimiziotn mwgtlbwo(8, 5, 4);
+  //  oa::teachingLearningBasedOptimization mctlbo(20);
+
+  auto res = mwgtlbwo.optimize(pop);
+
+  PointCloudT::Ptr trans(new PointCloudT);
+
+  Eigen::Affine3f transform_2 = Eigen::Affine3f::Identity();
+  transform_2.translation() << res.championDecisionVariables()[3],
+      res.championDecisionVariables()[4], res.championDecisionVariables()[5];
+  transform_2.rotate(
+      Eigen::AngleAxisf(res.championDecisionVariables()[0], Eigen::Vector3f::UnitX()));
+  transform_2.rotate(
+      Eigen::AngleAxisf(res.championDecisionVariables()[1], Eigen::Vector3f::UnitY()));
+  transform_2.rotate(
+      Eigen::AngleAxisf(res.championDecisionVariables()[2], Eigen::Vector3f::UnitZ()));
+
+  pcl::transformPointCloud(*readPlyData::testPointCloud()->cloudSource, *trans, transform_2);
+  std::cout << transform_2.matrix() << std::endl;
+
+  showTrans(readPlyData::testPointCloud()->cloudSource, readPlyData::testPointCloud()->cloudTarget,
+            trans);
+
+  ASSERT_TRUE(true);
+}

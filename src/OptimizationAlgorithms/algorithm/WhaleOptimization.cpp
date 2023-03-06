@@ -59,73 +59,75 @@ oa::Population oa::WhaleOptimization::optimize(oa::Population pop)
 
     leaderWhale = pop.championDecisionVariables();
     auto cahm = pop.championFitnessScores()[0];
-//    std::cout << cahm << std::endl;
+    //    std::cout << cahm << std::endl;
     alpha = 2.0 - alpha_div * ((double)i);
-    //    tbb::parallel_for(tbb::blocked_range<size_t>(0, numOfWhales),
-    //                      [&](tbb::blocked_range<size_t> range) {
-    //                        for (auto j = range.begin(); j != range.end(); ++j) {
-    for (auto j = 0; j != X.size(); ++j) {
+    tbb::parallel_for(
+        tbb::blocked_range<size_t>(0, numOfWhales),
+        [&](tbb::blocked_range<size_t> range) {
+          for (auto j = range.begin(); j != range.end(); ++j) {
+            //    for (auto j = 0; j != X.size(); ++j) {
 
-      auto A1 = 2 * alpha * r1(gen) - alpha;
-      auto C1 = 2 * r2(gen);
+            auto A1 = 2 * alpha * r1(gen) - alpha;
+            auto C1 = 2 * r2(gen);
 
-      newSol[j] = X[j];
-      // 发泡网攻击
-      if (p(gen) < 0.5) {
+            newSol[j] = X[j];
+            // 发泡网攻击
+            if (p(gen) < 0.5) {
 
-        // 收缩包围
-        if (std::abs(A1) < 1) {
-          // 包围猎物
-          for (size_t k = 0; k < dim; ++k) {
-            auto Dk = std::abs(C1 * leaderWhale[k] - newSol[j][k]);
-            newSol[j][k] = leaderWhale[k] - A1 * Dk;
+              // 收缩包围
+              if (std::abs(A1) < 1) {
+                // 包围猎物
+                for (size_t k = 0; k < dim; ++k) {
+                  auto Dk = std::abs(C1 * leaderWhale[k] - newSol[j][k]);
+                  newSol[j][k] = leaderWhale[k] - A1 * Dk;
+                }
+              } else {
+                // 搜索捕食
+
+                for (size_t k = 0; k < dim; ++k) {
+                  auto rand_whale = whale2(gen);
+                  while (rand_whale == j) {
+                    rand_whale = whale2(gen);
+                  }
+                  auto D_rand = std::abs(C1 * newSol[rand_whale][k] - newSol[j][k]);
+                  newSol[j][k] = newSol[rand_whale][k] - A1 * D_rand;
+                }
+              }
+            } else {
+              auto rand_l = l(gen);
+              for (size_t k = 0; k < dim; ++k) {
+                auto Dk = std::abs(leaderWhale[k] - newSol[j][k]);
+                newSol[j][k] = leaderWhale[k] +
+                               Dk * std::pow(oa::e(), rand_l * b) * std::cos(2 * oa::pi() * rand_l);
+              }
+            }
+
+            subjectTo(newSol[j]);
+
+            //            if (auto res = kprob.fitnessScore(newSol[j]); res[0] <
+            //            fitnessScores[j][0]) {
+            //              //                mut1.lock();
+            //              for (int k = 0; k < dim; ++k) {
+            //                X[j][k] = newSol[j][k];
+            //              }
+            //              fitnessScores[j][0] = res[0];
+            ////                            std::cout<<i<<"success"<<std::endl;
+            //              //                mut1.unlock();
+            //              pop.setDvF(j, newSol[j], res);
+            //            } else {
+            ////              std::cout<<i<<"fail"<<std::endl;
+            //            }
+            for (int k = 0; k < dim; ++k) {
+              X[j][k] = newSol[j][k];
+            }
+            auto res = kprob.fitnessScore(newSol[j]);
+            //      std::cout << i << "   " << res[0] << std::endl;
+            fitnessScores[j][0] = res[0];
+            //                mut1.unlock();
+            pop.setDvF(j, newSol[j], res);
           }
-        } else {
-          // 搜索捕食
-          auto rand_whale = whale2(gen);
-          while (rand_whale == j) {
-            rand_whale = whale2(gen);
-          }
-          for (size_t k = 0; k < dim; ++k) {
-            auto D_rand = std::abs(C1 * newSol[rand_whale][k] - newSol[j][k]);
-            newSol[j][k] = newSol[rand_whale][k] - A1 * D_rand;
-          }
-        }
-      } else {
-        auto rand_l = l(gen);
-        for (size_t k = 0; k < dim; ++k) {
-          auto Dk = std::abs(leaderWhale[k] - newSol[j][k]);
-          newSol[j][k] =
-              leaderWhale[k] + Dk * std::pow(oa::e(), rand_l * b) * std::cos(2 * oa::pi() * rand_l);
-        }
-      }
-
-      subjectTo(newSol[j]);
-
-      //            if (auto res = kprob.fitnessScore(newSol[j]); res[0] <
-      //            fitnessScores[j][0]) {
-      //              //                mut1.lock();
-      //              for (int k = 0; k < dim; ++k) {
-      //                X[j][k] = newSol[j][k];
-      //              }
-      //              fitnessScores[j][0] = res[0];
-      ////                            std::cout<<i<<"success"<<std::endl;
-      //              //                mut1.unlock();
-      //              pop.setDvF(j, newSol[j], res);
-      //            } else {
-      ////              std::cout<<i<<"fail"<<std::endl;
-      //            }
-      for (int k = 0; k < dim; ++k) {
-        X[j][k] = newSol[j][k];
-      }
-      auto res = kprob.fitnessScore(newSol[j]);
-      ;
-      fitnessScores[j][0] = res[0];
-      //                            std::cout<<i<<"success"<<std::endl;
-      //                mut1.unlock();
-      pop.setDvF(j, newSol[j], res);
-    }
-    //                      });
+        },
+        tbb::auto_partitioner());
   }
   return pop;
 }
