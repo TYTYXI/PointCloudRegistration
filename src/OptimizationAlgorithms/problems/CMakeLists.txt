@@ -1,0 +1,62 @@
+set(sources
+        problems.h
+        test1Problem.h
+        test1Problem.cpp
+        test2Problem.h
+        test2Problem.cpp
+        NullProblem.h
+        NullProblem.cpp
+        UnimodalBenchmarkFunctions/UBFs.h
+        UnimodalBenchmarkFunctions/UBF1.h
+        UnimodalBenchmarkFunctions/UBF1.cpp
+        UnimodalBenchmarkFunctions/UBF2.h
+        UnimodalBenchmarkFunctions/UBF2.cpp
+        UnimodalBenchmarkFunctions/UBF3.h
+        UnimodalBenchmarkFunctions/UBF3.cpp
+        UnimodalBenchmarkFunctions/UBF4.h
+        UnimodalBenchmarkFunctions/UBF4.cpp
+        UnimodalBenchmarkFunctions/UBF5.h
+        UnimodalBenchmarkFunctions/UBF5.cpp
+        UnimodalBenchmarkFunctions/UBF6.h
+        UnimodalBenchmarkFunctions/UBF6.cpp
+        UnimodalBenchmarkFunctions/UBF7.h
+        UnimodalBenchmarkFunctions/UBF7.cpp
+        MultimodalBenchmarkFunctions/MBFs.h
+        MultimodalBenchmarkFunctions/MBF1.h
+        MultimodalBenchmarkFunctions/MBF1.cpp
+        MultimodalBenchmarkFunctions/MBF2.h
+        MultimodalBenchmarkFunctions/MBF2.cpp
+        MultimodalBenchmarkFunctions/MBF3.h
+        MultimodalBenchmarkFunctions/MBF3.cpp
+        MultimodalBenchmarkFunctions/MBF4.h
+        MultimodalBenchmarkFunctions/MBF4.cpp
+        MultimodalBenchmarkFunctions/MBF5.h
+        MultimodalBenchmarkFunctions/MBF5.cpp
+        MultimodalBenchmarkFunctions/MBF6.h
+        MultimodalBenchmarkFunctions/MBF6.cpp
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBFs.h
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF1.h
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF1.cpp
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF2.h
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF2.cpp
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF3.h
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF3.cpp
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF4.h
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF4.cpp
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF5.h
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF5.cpp
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF6.h
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF6.cpp
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF7.h
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF7.cpp
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF8.h
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF8.cpp
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF9.h
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF9.cpp
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF10.h
+        Fixed-dimenstionMultimodalBenchmarkFunctions/FMBF10.cpp
+)
+
+extend_ons_target(OptimizationAlgorithms
+        SOURCES ${sources}
+)

@@ -69,7 +69,7 @@ void L2_SimpleProblem::setInputCloud(const PointCloudT::Ptr& cloudSource)
   source_ = cloudSource;
 }
 
-void L2_SimpleProblem::setInputTarget(const PointCloudT::Ptr& cloudTarget)
+void L2_SimpleProblem::setTargetCloud(const PointCloudT::Ptr& cloudTarget)
 {
   target_ = cloudTarget;
   tree_.setInputCloud(cloudTarget);

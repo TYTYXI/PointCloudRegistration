@@ -1,2 +1,4 @@
 add_subdirectory(OptimizationAlgorithms)
 add_subdirectory(registration)
+add_subdirectory(cuda)
+add_subdirectory(utilities)

@@ -1,6 +1,10 @@
 //
 // Created by XI on 2023/2/24.
 //
+// STD Includes
+#include <numeric>
+#include <utility>
+
 #include "../algorithm/WhaleOptimization.h"
 #include "../problems/test1Problem.h"
 #include "../problems/test2Problem.h"
@@ -8,6 +12,7 @@
 
 #include "algorithm/MultipleClassTeachingLearningBasedOptimization.h"
 #include "algorithm/TeachingLearningBasedOptimization.h"
+#include "algorithm/SmallGroupTeachingLearningBasedOptimization.h"
 #include "benchmark/benchmark.h"
 
 #include "gtest/gtest.h"
@@ -16,25 +21,33 @@
 
 #include "problems.h"
 
-#define TEST_MACRO(name, index, prob, numOfVars)                                                              \
+#define TEST_MACRO(name, index, prob, numOfVars)                                                   \
   TEST(name, test##index)                                                                          \
   {                                                                                                \
-    oa::Problem prob{oa::prob(numOfVars)};                                                                \
-    oa::teachingLearningBasedOptimization tlbo(500);                                               \
+    oa::Problem prob{oa::prob(numOfVars)};                                                         \
+    oa::smallGroupTeachingLearningBasedOptimization tlbo(500);                                               \
     oa::VectorDouble temp;                                                                         \
+    std::vector<double> std;                                                                       \
     double avg = 0;                                                                                \
     for (size_t i = 0; i < 30; ++i) {                                                              \
       oa::Population pop{prob, 30};                                                                \
-      auto res = tlbo.optimize(pop);                                                                \
+      auto res = tlbo.optimize(pop);                                                               \
       avg += res.championFitnessScores()[0];                                                       \
       temp.emplace_back(res.championFitnessScores()[0]);                                           \
+      std.emplace_back(res.championFitnessScores()[0]);                                            \
     }                                                                                              \
                                                                                                    \
-    std::cout << avg / 30 << std::endl;                                                            \
-    std::cout << *std::min_element(temp.cbegin(), temp.cend()) << std::endl;                                                      \
+    std::cout << "F" << index << "  =  " << avg / 30 << std::endl;                                 \
+    std::cout << *std::min_element(temp.cbegin(), temp.cend()) << std::endl;                       \
+                                                                                                   \
+    for (int i = 0; i < std.size(); i++) {                                                         \
+      std[i] = std::pow(std[i] - avg / 30, 2);                                                     \
+    }                                                                                              \
+    double std_sum = 0.0;                                                                          \
+    std_sum = std::accumulate(std.begin(), std.end(), 0.0);                                        \
+    std::cout << std::pow(std_sum / 30, 0.5) << std::endl;                                         \
     ASSERT_TRUE(true);                                                                             \
   }
-
 
 TEST_MACRO(TLBO, 1, UBF1, 30)
 TEST_MACRO(TLBO, 2, UBF2, 30)

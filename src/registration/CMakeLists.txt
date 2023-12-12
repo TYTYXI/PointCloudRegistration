@@ -1,29 +1,27 @@
 set(sources
         registration_global.h
         registrationObject.h registrationObject.cpp
-        registraion_visualization.h
-        registraion_visualization.cpp
-#        tlboRegistraion.h tlboRegistraion.cpp
-        L2_SimpleProblem.cpp L2_SimpleProblem.h
+        registration_visualization.h
+        registration_visualization.cpp
+        #        tlboRegistraion.h tlboRegistraion.cpp
+        helper_cuda.h helper_string.h
         dist.h
-        )
+)
 
-add_ons_plugin(registration
-        INCLUDES ../OptimizationAlgorithms
+add_ons_lib(Registration
+        PUBLIC_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}
+        INCLUDES ../OptimizationAlgorithms pcl/gpu/containers/include ../utilities
         SOURCES ${sources}
-        PUBLIC_DEPENDS Qt::Core ${PCL_LIBRARIES} Eigen3::Eigen TBB::tbb OptimizationAlgorithms)
+        DEPENDS Qt::Core ${PCL_LIBRARIES} ${VTK_LIBRARIES}
+        Eigen3::Eigen TBB::tbb
+        LIB_DEPENDS OptimizationAlgorithms PCRUtilities dataset
+        COMPILE_DEFINITIONS REGISTRATION_LIB
+)
 
-add_ons_test(registration
-        INCLUDES ../OptimizationAlgorithms
-        SOURCES registration_test.cpp ${sources} WOARegsitrationTest.cpp
-        DEPENDS Qt::Core registration dataset ${PCL_LIBRARIES} OptimizationAlgorithms Eigen3::Eigen TBB::tbb)
-
-add_ons_test(registration_benchmark
-        INCLUDES ../OptimizationAlgorithms
-        SOURCES registration_benchmark.cpp ${sources}
-        DEPENDS Qt::Core registration dataset ${PCL_LIBRARIES} OptimizationAlgorithms Eigen3::Eigen TBB::tbb)
-
-#target_compile_definitions(algorithm PRIVATE ALGORITHM_LIB)
+add_subdirectory(problems)
+add_subdirectory(tests)
+add_subdirectory(benchmark)
+add_subdirectory(filter)
 
 set(LIBRARY_OUTPUT_PATH ${BIN_OUTPUT_PATH}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${BIN_OUTPUT_PATH}/bin)

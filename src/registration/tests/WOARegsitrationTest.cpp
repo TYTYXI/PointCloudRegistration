@@ -2,11 +2,9 @@
 // Created by XI on 2023/2/24.
 //
 
-#include <QFile>
-
 #include "gtest/gtest.h"
 
-#include "../dataset/readPlyData.h"
+#include "../dataset/ReadPlyData.h"
 
 #include <ctime>
 #include <pcl/common/common.h>
@@ -30,10 +28,10 @@
 // #include "tlboRegistraion.h"
 #include "L2_SimpleProblem.h"
 
-#include "registraion_visualization.h"
+#include "registration_visualization.h"
 
-typedef pcl::PointXYZ PointT;
-typedef pcl::PointCloud<PointT> PointCloudT;
+ using PointT=pcl::PointXYZ ;
+using PointCloudT= pcl::PointCloud<PointT> ;
 
 TEST(WOARegistraion, test1)
 {

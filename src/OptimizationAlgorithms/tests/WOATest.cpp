@@ -29,8 +29,8 @@
       temp.emplace_back(res.championFitnessScores()[0]);                                           \
     }                                                                                              \
                                                                                                    \
-    std::cout << avg / 30 << std::endl;                                                            \
-    std::cout << *std::min_element(temp.cbegin(), temp.cend()) << std::endl;                                                          \
+    std::cout << "F" << index << "  =  " << avg / 30 << std::endl;                                 \
+    std::cout << *std::min_element(temp.cbegin(), temp.cend()) << std::endl;                       \
     ASSERT_TRUE(true);                                                                             \
   }
 

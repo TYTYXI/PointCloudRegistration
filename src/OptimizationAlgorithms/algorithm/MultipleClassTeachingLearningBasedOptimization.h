@@ -24,6 +24,7 @@ private:
   size_t iteration_;
   size_t numOfClasses_;
   size_t interval_;
+  double lastFitnessScore_;
 };
 
 

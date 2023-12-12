@@ -1,0 +1,22 @@
+//
+// Created by XI on 2023/10/1.
+//
+
+#ifndef POINTCLOUDREGISTRATION_DATASET_DATASETGLOBAL_H_
+#define POINTCLOUDREGISTRATION_DATASET_DATASETGLOBAL_H_
+
+
+#include <QtGlobal>
+
+//#ifndef BUILD_STATIC
+//#if defined(DATASET_LIB)
+#define DATASET_EXPORT Q_DECL_EXPORT
+//#else
+//#define DATASET_EXPORT Q_DECL_IMPORT
+//#endif
+//#else
+//#define DATASET_EXPORT
+//#endif
+
+
+#endif // POINTCLOUDREGISTRATION_DATASET_DATASETGLOBAL_H_

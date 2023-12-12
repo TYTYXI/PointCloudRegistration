@@ -1,5 +1,9 @@
 //
 // Created by XI on 2023/2/64.
+// STD Includes
+#include <numeric>
+#include <utility>
+
 //
 #include "../algorithm/WhaleOptimization.h"
 #include "../problems/test1Problem.h"
@@ -19,18 +23,27 @@
   TEST(name, test##index)                                                                          \
   {                                                                                                \
     oa::Problem prob{oa::prob(numOfVars)};                                                         \
-    oa::multipleClassTeachingLearningBasedOptimization mctlbo(64, 8, 4);                           \
+    oa::multipleClassTeachingLearningBasedOptimization mctlbo(24, 6, 4);                           \
     oa::VectorDouble temp;                                                                         \
+    std::vector<double> std;                                                                       \
     double avg = 0;                                                                                \
     for (size_t i = 0; i < 30; ++i) {                                                              \
       oa::Population pop{prob, 30};                                                                \
       auto res = mctlbo.optimize(pop);                                                             \
       avg += res.championFitnessScores()[0];                                                       \
       temp.emplace_back(res.championFitnessScores()[0]);                                           \
+      std.emplace_back(res.championFitnessScores()[0]);                                            \
     }                                                                                              \
                                                                                                    \
     std::cout << "F" << index << "  =  " << avg / 30 << std::endl;                                 \
-    std::cout << *std::min_element(temp.cbegin(), temp.cend()) << std::endl;                                                           \
+    std::cout << *std::min_element(temp.cbegin(), temp.cend()) << std::endl;                       \
+                                                                                                   \
+    for (int i = 0; i < std.size(); i++) {                                                         \
+      std[i] = std::pow(std[i] - avg/30, 2);                                                          \
+    }                                                                                              \
+    double std_sum = 0.0;                                                                          \
+    std_sum = std::accumulate(std.begin(), std.end(), 0.0);                                        \
+    std::cout << std::pow(std_sum / 30, 0.5) << std::endl;                                         \
     ASSERT_TRUE(true);                                                                             \
   }
 

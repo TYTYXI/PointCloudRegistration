@@ -6,6 +6,7 @@
 // TBB Includes
 #include <tbb/parallel_for.h>
 #include <tbb/spin_mutex.h>
+#include <tbb/spin_rw_mutex.h>
 
 tbb::spin_mutex mut1;
 
@@ -40,6 +41,39 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
   for (auto& sol : newSol) {
     sol.resize(dim);
   }
+
+  // Tent 混沌序列
+  std::vector<double> tentMapping;
+  int count = 0;
+  tentMapping.emplace_back(r(gen));
+  double bb = 0.499;
+  auto calculate_tent_mapping = [&](int index) {
+    auto zk = tentMapping[index - 1];
+    if (0 < zk && zk <= bb) {
+      return zk / bb;
+    } else if (bb < zk && zk <= 1) {
+      return (1. - zk) / (1. - bb);
+    }
+  };
+
+  tbb::spin_rw_mutex mtx;
+  auto rx2 = [&]() {
+    mtx.lock();
+    count++;
+    tentMapping.emplace_back(calculate_tent_mapping(count));
+    auto res = 8 * (tentMapping[count] * (1 - tentMapping[count]));
+    mtx.unlock();
+    return res;
+  };
+
+  auto rx1 = [&]() {
+    mtx.lock();
+    count++;
+    tentMapping.emplace_back(calculate_tent_mapping(count));
+    auto res = 4 * (tentMapping[count] * (1 - tentMapping[count]));
+    mtx.unlock();
+    return res;
+  };
 
   // 判断越界
   auto subjectTo = [&](VectorDouble& sol) {
@@ -80,7 +114,7 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
               newSol[j] = X[j];
               //        float tempVariables[2];
               for (size_t k = 0; k < dim; ++k) {
-                newSol[j][k] = newSol[j][k] + R * (teacher[k] - T * mean[k]);
+                newSol[j][k] = newSol[j][k] + rx1() * (teacher[k] - T * mean[k]);
               }
 
               subjectTo(newSol[j]);
@@ -139,11 +173,11 @@ Population oa::teachingLearningBasedOptimization::optimize(Population pop)
               R = r(gen);
               if (fitnessScores[j][0] < fitnessScores[student2][0]) {
                 for (int k = 0; k < dim; ++k) {
-                  newSol[j][k] = newSol[j][k] + R * (newSol[j][k] - X[student2][k]);
+                  newSol[j][k] = newSol[j][k] + rx1() * (newSol[j][k] - X[student2][k]);
                 }
               } else {
                 for (int k = 0; k < dim; ++k) {
-                  newSol[j][k] = newSol[j][k] + R * (X[student2][k] - newSol[j][k]);
+                  newSol[j][k] = newSol[j][k] + rx1() * (X[student2][k] - newSol[j][k]);
                 }
               }
 
